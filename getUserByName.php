@@ -1,0 +1,45 @@
+
+
+<?php
+header("Access-Control-Allow-Origin:*");
+$username = $_GET["name"];
+
+function getUserByName($mysqli, $username)
+{
+
+    $arr = array();
+    $sql = "SELECT * FROM t_user_real where name = '$username';";
+    $result = $mysqli->query($sql);
+    $num = $result->num_rows;
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $user_id = $row['user_id'];
+            $name = $row['name'];
+            $college = $row['college'];
+            $class = $row['class'];
+            $phone = $row['phone'];
+            $email = $row['email'];
+            $gender = $row['gender'];
+            $description = $row['description'];
+            $room = $row['room'];
+            $seat = $row['seat'];
+            array_push($arr, array('user_id' => $user_id, 'name' => $name, 'college' => $college, 'class' => $class, 'phone' => $phone, 'email' => $email, 'sex' => $gender, 'decription' => $description, 'room' => $room, 'seat' => $seat));
+        }
+    }
+    $result = array('code' => 0, 'msg' => '', 'count' => $num, 'data' => $arr);
+    return $result;
+}
+//$conn
+$mysqli = mysqli_connect("bj-cynosdbmysql-grp-nofx4lqu.sql.tencentcdb.com:25980","root","Lzqzxc,.","dainsai");
+
+//如果有错误，存在错误号
+if (mysqli_errno($mysqli)) {
+
+    echo mysqli_error($mysqli);
+
+    exit;
+}
+mysqli_set_charset($mysqli, 'utf8');   //选择字符集
+
+$result = getUserByName($mysqli, $username);
+echo json_encode($result);
